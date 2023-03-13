@@ -8,6 +8,7 @@ platform:
 
 steps:
   - name: ci
+    privileged: true
     image: rancher/dapper:v0.5.4
     commands:
       - dapper ci
