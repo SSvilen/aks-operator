@@ -153,19 +153,22 @@ func createManagedCluster(ctx context.Context, cred *Credentials, workplacesClie
 			agentProfile.MinCount = np.MinCount
 		}
 
+		if hasCustomVirtualNetwork(spec) {
+			agentProfile.VnetSubnetID = to.StringPtr(fmt.Sprintf(
+				"/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s",
+				cred.SubscriptionID,
+				virtualNetworkResourceGroup,
+				to.String(spec.VirtualNetwork),
+				to.String(spec.Subnet),
+				))
+
+			logrus.Infof("Adding VNETSubnetID [%s]", agentProfile.VnetSubnetID )
+		}
+
 		agentPoolProfiles = append(agentPoolProfiles, agentProfile)
 	}
-	
-        if hasCustomVirtualNetwork(spec) {
-		agentProfile.VnetSubnetID = to.StringPtr(fmt.Sprintf(
-			"/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s",
-			cred.SubscriptionID,
-			virtualNetworkResourceGroup,
-			to.String(spec.VirtualNetwork),
-			to.String(spec.Subnet),
-		))
-	}
-	
+
+
 	managedCluster.ManagedClusterProperties.AgentPoolProfiles = &agentPoolProfiles
 
 	if hasLinuxProfile(spec) {
