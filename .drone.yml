@@ -61,7 +61,7 @@ steps:
       password:
         from_secret: dockerhub_password
       #tag: ""
-      dry_run: true
+      #dry_run: true
     #when:
     #  event:
     #    - pull_request
